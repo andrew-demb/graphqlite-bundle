@@ -181,7 +181,7 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
 
             $container->loadFromExtension('graphqlite', $graphqliteConf);
         });
-        $confDir = $this->getProjectDir().'/Tests/Fixtures/config';
+        $confDir = $this->getProjectDir().'/tests/Fixtures/config';
 
         $loader->load($confDir.'/{packages}/*'.self::CONFIG_EXTS, 'glob');
         $loader->load($confDir.'/{packages}/'.$this->environment.'/**/*'.self::CONFIG_EXTS, 'glob');
@@ -192,7 +192,7 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
     // Note: typing is disabled because using different classes in Symfony 4 and 5
     protected function configureRoutes(/*RoutingConfigurator*/ $routes)
     {
-        $routes->import(__DIR__.'/../Resources/config/routes.xml');
+        $routes->import(__DIR__.'/../src/Resources/config/routes.xml');
     }
 
     public function getCacheDir(): string
