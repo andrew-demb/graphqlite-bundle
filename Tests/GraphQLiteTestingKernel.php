@@ -119,7 +119,6 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
             $container->loadFromExtension('framework', $frameworkConf);
             if ($this->enableSecurity) {
                 $container->loadFromExtension('security', array(
-                    'enable_authenticator_manager' => true,
                     'providers' => [
                         'in_memory' => [
                             'memory' => [
