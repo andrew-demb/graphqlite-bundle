@@ -18,7 +18,7 @@
   "require" : {
     "php" : ">=8.1",
     "ext-json": "*",
-    "thecodingmachine/graphqlite" : "dev-master as 7.1",
+    "thecodingmachine/graphqlite" : "dev-symfony7-pack as 7.1",
     "thecodingmachine/graphqlite-symfony-validator-bridge": "^6.0 || ^7.0",
     "symfony/framework-bundle": "^6.4 || ^7.0",
     "symfony/validator": "^6.4 || ^7.0",
@@ -66,5 +66,11 @@
       "dev-master": "6.0.x-dev"
     }
   },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/andrew-demb/graphqlite.git"
+    }
+  ],
   "prefer-stable": true
 }
