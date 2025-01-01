@@ -4,6 +4,7 @@
 namespace TheCodingMachine\GraphQLite\Bundle\Controller;
 
 
+use GraphQL\Error\Error;
 use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\Diactoros\StreamFactory;
@@ -88,19 +89,13 @@ class GraphQLiteController
                     flags: \JSON_THROW_ON_ERROR
                 );
             } catch (\JsonException $e) {
-                throw JsonException::create(
-                    reason: $e->getMessage(),
-                    code: Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                    previous:$e
-                );
+                return $this->invalidJsonBodyResponse($e);
             }
 
             if (!is_array($parsedBody)) {
-                throw JsonException::create(
-                    reason: 'Expecting associative array from request, got ' . gettype($parsedBody),
-                    code: Response::HTTP_UNPROCESSABLE_ENTITY
-                );
+                return $this->invalidRequestBodyExpectedAssociativeResponse($parsedBody);
             }
+
             $psr7Request = $psr7Request->withParsedBody($parsedBody);
         }
 
@@ -137,5 +132,52 @@ class GraphQLiteController
         }
 
         throw new RuntimeException('Only SyncPromiseAdapter is supported');
+    }
+
+    private function invalidJsonBodyResponse(\JsonException $e): JsonResponse
+    {
+        $jsonException = JsonException::create(
+            reason: $e->getMessage(),
+            code: Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+            previous: $e,
+        );
+        $result = new ExecutionResult(
+            null,
+            [
+                new Error(
+                    'Invalid JSON.',
+                    previous: $jsonException,
+                    extensions: $jsonException->getExtensions(),
+                ),
+            ]
+        );
+
+        return new JsonResponse(
+            $result->toArray($this->debug),
+            $this->httpCodeDecider->decideHttpStatusCode($result)
+        );
+    }
+
+    private function invalidRequestBodyExpectedAssociativeResponse(mixed $parsedBody): JsonResponse
+    {
+        $jsonException = JsonException::create(
+            reason: 'Expecting associative array from request, got ' . gettype($parsedBody),
+            code: Response::HTTP_UNPROCESSABLE_ENTITY,
+        );
+        $result = new ExecutionResult(
+            null,
+            [
+                new Error(
+                    'Invalid JSON.',
+                    previous: $jsonException,
+                    extensions: $jsonException->getExtensions(),
+                ),
+            ]
+        );
+
+        return new JsonResponse(
+            $result->toArray($this->debug),
+            $this->httpCodeDecider->decideHttpStatusCode($result)
+        );
     }
 }
