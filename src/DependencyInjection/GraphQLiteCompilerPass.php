@@ -337,7 +337,7 @@ class GraphQLiteCompilerPass implements CompilerPassInterface
         $services = $this->getCodeCache()->get($refClass, function() use ($refClass, $reader, $container, $isController): array {
             $services = [];
             foreach ($refClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-                $field = $reader->getRequestAnnotation($method, Field::class) ?? $reader->getRequestAnnotation($method, Query::class) ?? $reader->getRequestAnnotation($method, Mutation::class);
+                $field = $reader->getGraphQLElementAnnotation($method, Field::class) ?? $reader->getGraphQLElementAnnotation($method, Query::class) ?? $reader->getGraphQLElementAnnotation($method, Mutation::class);
                 if ($field !== null) {
                     if ($isController) {
                         $services[$refClass->getName()] = $refClass->getName();
