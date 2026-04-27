@@ -101,7 +101,9 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
     {
         $loader->load(function(ContainerBuilder $container) {
             $frameworkConf = [
-                'secret' => 'S0ME_SECRET'
+                'secret' => 'S0ME_SECRET',
+                // forward compatibility with symfony/validator v7
+                'validation' => ['email_validation_mode' => 'html5'],
             ];
 
             $frameworkConf['cache'] =[
