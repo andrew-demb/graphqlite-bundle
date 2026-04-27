@@ -100,9 +100,9 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
     public function configureContainer(ContainerBuilder $c, LoaderInterface $loader)
     {
         $loader->load(function(ContainerBuilder $container) {
-            $frameworkConf = array(
+            $frameworkConf = [
                 'secret' => 'S0ME_SECRET'
-            );
+            ];
 
             $frameworkConf['cache'] =[
                 'app' => 'cache.adapter.array',
@@ -126,46 +126,52 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
                     $extraConfig['enable_authenticator_manager'] = true;
                 }
 
-                $container->loadFromExtension('security', array_merge(array(
-                    'providers' => [
-                        'in_memory' => [
-                            'memory' => [
-                                'users' => [
-                                    'foo' => [
-                                        'password' => 'bar',
-                                        'roles' => 'ROLE_USER',
+                $container->loadFromExtension(
+                    'security',
+                    array_merge(
+                        [
+                            'providers' => [
+                                'in_memory' => [
+                                    'memory' => [
+                                        'users' => [
+                                            'foo' => [
+                                                'password' => 'bar',
+                                                'roles' => 'ROLE_USER',
+                                            ],
+                                        ],
                                     ],
-                               ],
-                            ],
-                        ],
-                        'in_memory_other' => [
-                            'memory' => [
-                                'users' => [
-                                    'foo' => [
-                                        'password' => 'bar',
-                                        'roles' => 'ROLE_USER',
+                                ],
+                                'in_memory_other' => [
+                                    'memory' => [
+                                        'users' => [
+                                            'foo' => [
+                                                'password' => 'bar',
+                                                'roles' => 'ROLE_USER',
+                                            ],
+                                        ],
                                     ],
                                 ],
                             ],
+                            'firewalls' => [
+                                'main' => [
+                                    'provider' => 'in_memory',
+                                ],
+                            ],
+                            'password_hashers' => [
+                                InMemoryUser::class => 'plaintext',
+                            ],
                         ],
-                    ],
-                    'firewalls' => [
-                        'main' => [
-                            'provider' => 'in_memory'
-                        ]
-                    ],
-                    'password_hashers' => [
-                        InMemoryUser::class => 'plaintext',
-                    ],
-                ), $extraConfig));
+                        $extraConfig,
+                    ),
+                );
             }
 
-            $graphqliteConf = array(
+            $graphqliteConf = [
                 'namespace' => [
                     'controllers' => $this->controllersNamespace,
                     'types' => $this->typesNamespace
                 ],
-            );
+            ];
 
             if ($this->enableLogin) {
                 $graphqliteConf['security']['enable_login'] = $this->enableLogin;
