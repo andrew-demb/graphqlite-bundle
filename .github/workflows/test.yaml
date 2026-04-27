@@ -32,8 +32,8 @@ jobs:
                       php-version: '8.5'
                       install-args: ''
                       composer-cache-suffix: default
-                    - name: php-8.4-prefer-lowest
-                      php-version: '8.4'
+                    - name: php-8.5-prefer-lowest
+                      php-version: '8.5'
                       install-args: '--prefer-lowest'
                       composer-cache-suffix: prefer-lowest
             fail-fast: false
