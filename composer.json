@@ -41,6 +41,9 @@
     "composer/semver": "^3.4",
     "overblog/graphiql-bundle": "^0.2 || ^0.3 || ^1"
   },
+  "conflict": {
+    "symfony/password-hasher": "<6.4"
+  },
   "scripts": {
     "phpstan": "phpstan analyse -c phpstan.neon --no-progress"
   },
