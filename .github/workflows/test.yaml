@@ -28,6 +28,10 @@ jobs:
                       php-version: '8.4'
                       install-args: ''
                       composer-cache-suffix: default
+                    - name: php-8.5
+                      php-version: '8.5'
+                      install-args: ''
+                      composer-cache-suffix: default
                     - name: php-8.4-prefer-lowest
                       php-version: '8.4'
                       install-args: '--prefer-lowest'
@@ -76,7 +80,7 @@ jobs:
             - name: php
               uses: shivammathur/setup-php@2.36.0
               with:
-                  php-version: '8.4'
+                  php-version: '8.5'
                   ini-values: zend.assertions=1
 
             - name: composer-cache-dir
