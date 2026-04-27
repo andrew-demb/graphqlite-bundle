@@ -41,12 +41,6 @@
     "composer/semver": "^3.4",
     "overblog/graphiql-bundle": "^0.2 || ^0.3 || ^1"
   },
-  "conflict": {
-    "symfony/event-dispatcher": "<4.3",
-    "symfony/security-core": "<4.3",
-    "symfony/routing": "<4.3",
-    "phpdocumentor/type-resolver": "<1.4"
-  },
   "scripts": {
     "phpstan": "phpstan analyse -c phpstan.neon --no-progress"
   },
