@@ -337,13 +337,16 @@ class GraphQLiteCompilerPass implements CompilerPassInterface
         $services = $this->getCodeCache()->get($refClass, function() use ($refClass, $reader, $container, $isController): array {
             $services = [];
             foreach ($refClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-                $field = $reader->getGraphQLElementAnnotation($method, Field::class) ?? $reader->getGraphQLElementAnnotation($method, Query::class) ?? $reader->getGraphQLElementAnnotation($method, Mutation::class);
-                if ($field !== null) {
+                $resolveResult = $this->resolveFieldGraphqlElement($reader, $method);
+                if ($resolveResult['exists']) {
                     if ($isController) {
                         $services[$refClass->getName()] = $refClass->getName();
                     }
+
                     $services += $this->getListOfInjectedServices($method, $container);
-                    if ($field instanceof Field && $field->getPrefetchMethod() !== null) {
+
+                    $field = $resolveResult['field'];
+                    if (null !== $field && $field->getPrefetchMethod() !== null) {
                         $services += $this->getListOfInjectedServices($refClass->getMethod($field->getPrefetchMethod()), $container);
                     }
                 }
@@ -467,4 +470,29 @@ class GraphQLiteCompilerPass implements CompilerPassInterface
         }
     }
 
+    /**
+     * @return array{exists: bool, field: Field|null}
+     */
+    private function resolveFieldGraphqlElement(AnnotationReader $reader, ReflectionMethod $method): array
+    {
+        // backward compatibility with graphqlite v8.1
+        // @phpstan-ignore function.alreadyNarrowedType
+        if (false === \method_exists($reader, 'getGraphQLElementAnnotation')) {
+            // graphqlite versions in this BC branch expose getRequestAnnotation instead.
+            // @phpstan-ignore method.notFound
+            $element = $reader->getRequestAnnotation($method, Field::class)
+                // @phpstan-ignore method.notFound
+                ?? $reader->getRequestAnnotation($method, Query::class)
+                // @phpstan-ignore method.notFound
+                ?? $reader->getRequestAnnotation($method, Mutation::class);
+
+            return ['exists' => null !== $element, 'field' => ($element instanceof Field ? $element : null)];
+        }
+
+        $element = $reader->getGraphQLElementAnnotation($method, Field::class)
+            ?? $reader->getGraphQLElementAnnotation($method, Query::class)
+            ?? $reader->getGraphQLElementAnnotation($method, Mutation::class);
+
+        return ['exists' => null !== $element, 'field' => ($element instanceof Field ? $element : null)];
+    }
 }
