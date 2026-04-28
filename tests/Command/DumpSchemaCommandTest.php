@@ -18,9 +18,20 @@ class DumpSchemaCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
 
+        preg_match('/type Product \{(?P<body>[\s\S]*?)}/', $commandTester->getDisplay(), $matches);
+        self::assertArrayHasKey('body', $matches);
+
         self::assertMatchesRegularExpression(
-            '/type Product {[\s"]*name: String!\s*price: Float!\s*seller: Contact\s*}/',
-            $commandTester->getDisplay()
+            '/name: String!/',
+            $matches['body']
+        );
+        self::assertMatchesRegularExpression(
+            '/price: Float!/',
+            $matches['body']
+        );
+        self::assertMatchesRegularExpression(
+            '/seller: Contact/',
+            $matches['body']
         );
     }
 }

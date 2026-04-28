@@ -9,8 +9,8 @@ parameters:
         - src
     excludePaths:
         - vendor
-        - cache
-        - .phpstan-cache
+        - cache (?)
+        - .phpstan-cache (?)
         - tests
 
     polluteScopeWithLoopInitialAssignments: false

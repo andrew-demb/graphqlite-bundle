@@ -481,7 +481,10 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
+        $this->assertSame(400, $response->getStatusCode());
         $result = json_decode($response->getContent(), true);
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('errors', $result);
         $errors = $result['errors'];
 
         $this->assertSame('This value is not a valid email address.', $errors[0]['message']);
